@@ -22,7 +22,7 @@ what locals are and how they're used.
 Take a look at the included repo.  You should notice the same piece of view code
 in a few places.
 
-```erb
+```ruby
 <ul>
   <li> <%= @author.name %></li>
   <li> <%= @author.hometown %></li>
@@ -53,14 +53,14 @@ to apply it to all views that reference this `name` and `hometown` information.
 Let's remove the code from our `app/views/authors/show.html.erb` page.  Now our
 file should be empty:
 
-```erb
+```ruby
 <!-- app/views/authors/show.html.erb -->
 
 ```
 
 We can move the removed code into a partial, `app/views/authors/_author.html.erb`, that now has the following code:
 
-```erb
+```ruby
 <!-- app/views/authors/_author.html.erb -->
 
 <ul>
@@ -73,7 +73,7 @@ To keep our code in the show page rendering out the same content, we call the
 partial from the `app/views/authors/show.html.erb` file.  Doing this, the
 `app/views/authors/show.html.erb` file now looks like the following:
 
-```erb
+```ruby
 <%= render 'author' %>
 ```
 
@@ -82,7 +82,7 @@ Great!
 Now let's take a look at the `app/views/posts/show.html.erb` file.  It
 currently looks like the following:
 
-```erb
+```ruby
 Information About the Post
 <ul>
   <li> <%= @author.name %></li>
@@ -97,7 +97,7 @@ authors/author partial.  Let's remove the repetition in our codebase by using
 that partial instead.  By using the partial, our code will look like the
 following:
 
-```erb
+```ruby
 Information About the Post
 <%= render 'authors/author' %>
 <%= @post.title %>
@@ -123,7 +123,8 @@ Let's see how local variables make our code more explicit.
 This is what the entire show view, `app/views/posts/show.html.erb`, looks like
 when `locals` are used:
 
-```erb
+```ruby
+# app/views/posts/show.html.erb
 Information About the Post
 <%= render partial: "authors/author", locals: {post_author: @author} %>
 <%= @post.title %>
@@ -144,7 +145,8 @@ partial have the same names as the keys in our locals hash.
 In our example partial, `app/views/author/_author.html.erb`, we need to change
 our code from:
 
-```erb
+```ruby
+# app/views/author/_author.html.erb
 <ul>
   <li> <%= @author.name %></li>
   <li> <%= @author.hometown %></li>
@@ -153,7 +155,9 @@ our code from:
 
 to:
 
-```erb
+```ruby
+# app/views/author/_author.html.erb
+
 <ul>
   <li> <%= post_author.name %></li>
   <li> <%= post_author.hometown %></li>
@@ -181,7 +185,8 @@ the author information by changing our code to the following:
 `app/controllers/posts_controller`:
 
 ```ruby
-  ...
+# app/controllers/posts_controller
+
   def show
     @post = Post.find(params[:id])
   end
@@ -190,7 +195,9 @@ the author information by changing our code to the following:
 
 `app/views/posts/show.html.erb`:
 
-```erb
+```ruby
+# app/views/posts/show.html.erb
+
 Information About the Post
 <%= render partial: "authors/author", locals: {post_author: @post.author} %>
 <%= @post.title %>
